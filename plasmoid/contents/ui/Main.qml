@@ -9,12 +9,30 @@ Item {
     height: 200
     Component {
         id: trelloItemDelegate
-        Item {
-            width: trelloLabel.width; height: trelloLabel.height + 10
+        Rectangle {
+            property color tempColor
+            property color itemColor
+            width: parent.width; height: trelloLabel.height + 10
+            opacity: 0.7
             Column {
                 id: trelloLabel
+                width: parent.width
                 Text {text: "<b>TODOs</b>"}
-                Text {text: caption}
+                Text {id: captionText; text: caption}
+            }
+            MouseArea {
+                anchors.fill: parent
+                onEntered: {
+                    tempColor = captionText.color
+                    itemColor = parent.color
+                    parent.color = Qt.darker(itemColor, 1.5)
+                    captionText.color = "blue"
+                    console.log("You clicked item " + captionText.text)
+                }
+                onExited: {
+                    captionText.color = tempColor
+                    parent.color = itemColor
+                }
             }
         }
     }
@@ -22,7 +40,7 @@ Item {
     ListView {
         anchors.fill: parent
         model: DataModel {}
-        delegate: trelloItemDelegate
+        delegate: TrelloItem {}
         // orientation: Qt.Vertical
         // verticalLayoutDirection: ListView.TopToBottom
         highlight: Rectangle { color: "lightsteelblue"; radius: 5; width: trelloItemDelegate.width}
@@ -31,6 +49,7 @@ Item {
         //     radius: 5
         // }
         focus: true
+        spacing: 2
         clip: true
     }
 }
