@@ -1,6 +1,6 @@
 import QtQuick 2.0
 ListModel {
-    id: trelloModel
+    id: trelloItemListModel
     ListElement {
         caption: "太鼓达人鬼 8 前前前世"
     }

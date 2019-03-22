@@ -11,16 +11,19 @@ Component {
         id: trelloItem
         width: parent.width
         height: itemGrid.height + 10
+        // The row layout for checkbox and main trello item
         Row {
             spacing: 5
             anchors.fill: parent
             CheckBox {
                 id: itemCheckBox
             }
+            // Main trello item
             GridLayout {
                 id: itemGrid
                 columns: 2
                 width: parent.width - itemCheckBox.width
+                // The upper-left corner label that displays board/list name
                 Rectangle {
                     id: boardListLabel
                     width: boardListLabelText.width + 5
@@ -37,6 +40,7 @@ Component {
                     }
 
                 }
+                // The upper-right corner label that displays Due date if possible
                 Item {
                     id: dueDateLabel
                     width: dueDateRow.width
@@ -47,9 +51,12 @@ Component {
                         id: dueDateRow
                         anchors.centerIn: parent
                         spacing: 3
-                        PlasmaCore.IconItem {
+                        Image {
                             id: dueDateLabelIcon
-                            source: "face-cool"
+                            source: "../res/clock.svg"
+                            smooth: true
+                            width: dueDateLabelText.height
+                            height: dueDateLabelText.height
                         }
                         Text {
                             id: dueDateLabelText
@@ -59,6 +66,7 @@ Component {
                         }
                     }
                 }
+                // The title of the card
                 Item {
                     id: cardTitleLabel
                     height: cardTitleLabelText.height * 2
