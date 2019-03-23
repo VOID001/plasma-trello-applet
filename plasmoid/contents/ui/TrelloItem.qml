@@ -36,7 +36,7 @@ Component {
                         id: boardListLabelText
                         font.bold: true
                         font.pointSize: 12
-                        text: "board/list"
+                        text: boardName
                     }
 
                 }
@@ -53,7 +53,7 @@ Component {
                         spacing: 3
                         Image {
                             id: dueDateLabelIcon
-                            source: "../res/clock.svg"
+                            source: "res/clock.svg"
                             smooth: true
                             width: dueDateLabelText.height
                             height: dueDateLabelText.height
@@ -69,7 +69,7 @@ Component {
                 // The title of the card
                 Item {
                     id: cardTitleLabel
-                    height: cardTitleLabelText.height * 2
+                    height: cardTitleLabelText.height
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
                     Text {
@@ -80,7 +80,24 @@ Component {
                         font.bold: true
                         wrapMode: Text.Wrap
                         maximumLineCount: 2
-                        text: "This is a very very very looooooong sentence and it may exceed the width of current row"
+                        // text: "This is a very very very looooooong sentence and it may exceed the width of current row"
+                        text: name
+                    }
+                    MouseArea {
+                        property color oldColor
+                        anchors.fill: parent
+                        onClicked: {
+                            Qt.openUrlExternally(url)
+                        }
+                        hoverEnabled: true
+                        onEntered: {
+                            oldColor = cardTitleLabelText.color
+                            cardTitleLabelText.color = "coral"
+                        }
+                        onExited: {
+                            cardTitleLabelText.color = oldColor
+                        }
+
                     }
                 }
             }
