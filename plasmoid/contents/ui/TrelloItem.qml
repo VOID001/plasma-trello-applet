@@ -69,7 +69,7 @@ Component {
                 // The title of the card
                 Item {
                     id: cardTitleLabel
-                    height: cardTitleLabelText.height
+                    height: cardTitleLabelText.height * 2
                     Layout.fillWidth: true
                     Layout.columnSpan: 2
                     Text {

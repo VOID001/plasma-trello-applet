@@ -30,7 +30,7 @@ Item {
             delegate: TrelloItem {id: trelloItemDelegate}
             // highlight: Rectangle { anchors.fill: parent; color: "lightsteelblue"; radius: 5; /* width: trelloItemDelegate.width*/ }
             focus: true
-            spacing: 10
+            spacing: 3
             clip: true
         }
     }
@@ -40,7 +40,6 @@ Item {
         triggeredOnStart: true
         running: true
         onTriggered: {
-            console.log("Called")
             fetchAllTrelloData()
         }
     }
@@ -51,7 +50,6 @@ Item {
         interval: 5000
         running: true
         onTriggered: {
-            console.log("Reload Checking")
             reloadCheck()
         }
     }
@@ -68,13 +66,13 @@ Item {
                 return
             }
             if(!oldConfig && curConfig) {
-                console.log("RELOADED")
+                console.log("Reload board due to configuration change")
                 oldConfig = copyConfig(curConfig) // deep copy
                 fetchAllTrelloData()
                 return
             }
             if(oldConfig[propKey] != curConfig[propKey]) {
-                console.log("RELOADED")
+                console.log("Reload board due to configuration change")
                 fetchAllTrelloData()
                 oldConfig = copyConfig(curConfig)
                 return

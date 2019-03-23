@@ -37,6 +37,10 @@ function request(opt, callback) {
 	req.send(opt.data)
 }
 
+function get(opt, callback) {
+    request(opt, callback)     
+}
+
 
 function post(opt, callback) {
 	if (typeof opt === 'string') {
