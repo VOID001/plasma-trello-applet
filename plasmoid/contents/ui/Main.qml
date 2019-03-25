@@ -58,7 +58,7 @@ Item {
 
     function reloadCheck() {
         var curConfig = plasmoid.configuration;
-        var entries = ["api_key", "api_token"]
+        var entries = ["api_key", "api_token", "tracked_boards"]
         // console.log("OLD: " + JSON.stringify(oldConfig))
         // console.log("NEW: " + JSON.stringify(curConfig))
         for(var i = 0; i < entries.length; i++) {
@@ -83,7 +83,7 @@ Item {
     }
 
     function copyConfig(config) {
-        var entries = ["api_key", "api_token"]
+        var entries = ["api_key", "api_token", "tracked_boards"]
         var data = {}
         for(var i = 0; i < entries.length; i++) {
             var key = entries[i]
@@ -97,6 +97,9 @@ Item {
     // Methods
     function fetchAllTrelloData () {
         var boardList = []
+        if(plasmoid.configuration["tracked_boards"]) {
+            boardList = JSON.parse(plasmoid.configuration["tracked_boards"])
+        }
         console.log("key:" + apiKey + " token:" + apiToken)
         boardIDNameMap = {}
         trelloItemListModel.clear()
@@ -111,15 +114,19 @@ Item {
             trelloItemListModel.append(data)
             return
         }
+
         Requests.getJSON({
             url: "https://api.trello.com/1/members/me/boards?key=" + apiKey + "&token=" + apiToken
         }, function(err, data, xhr) { 
             if(!err) {
-                boardList = data
-                for (var i = 0; i < data.length; i++) {
-                    boardIDNameMap[data[i].id] = data[i].name
+                var boardIds = []
+                for (var i = 0; i < boardList.length; i++) {
+                    boardIDNameMap[boardList[i].id] = boardList[i].name
+                    if(boardList[i].selected) {
+                        boardIds.push(boardList[i].id)
+                    }
                 }
-                widget.fetchCards(boardList)
+                widget.fetchCards(boardIds)
                 return
             }
             var errItem  = {
@@ -134,10 +141,10 @@ Item {
     }
 
     // Called after BoardList is fetched
-    function fetchCards(boards) {
-        for(var i = 0; i < boards.length; i++) {
+    function fetchCards(boardIds) {
+        for(var i = 0; i < boardIds.length; i++) {
             Requests.getJSON({
-                url: "https://api.trello.com/1/boards/" + boards[i].id + "/cards?key=" + apiKey + "&token=" + apiToken
+                url: "https://api.trello.com/1/boards/" + boardIds[i] + "/cards?key=" + apiKey + "&token=" + apiToken
             }, function(err, data, xhr) {
                 if(!err) {
                     for(var i = 0; i < data.length; i++) {
