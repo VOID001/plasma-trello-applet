@@ -73,7 +73,7 @@ Item {
                 ListView {
                     id: boardList
                     anchors.fill: parent
-                    height: 500
+                    height: parent.height
                     model: ListModel { id: boards }
                     Component.onCompleted: {
                         var savedBoard = JSON.parse(plasmoid.configuration["tracked_boards"])
@@ -96,9 +96,7 @@ Item {
     }
 
     function updateConfiguration(configKey, configValue) {
-        // console.log("The key ["+ configKey + "] changed to <" + configValue + ">")
         plasmoid.configuration[configKey] = configValue
-        // console.log("config: " + JSON.stringify(plasmoid.configuration))
     }
 
     function pingTrello() {
@@ -108,17 +106,12 @@ Item {
     }
 
     function updateTrackedBoardList() {
-        while(boardSpinLock) {
-
-        }
-        boardSpinLock = true
         var trackedBoards = []
         for(var i = 0; i < fetchedBoardList.length; i++) {
             var boardItem = fetchedBoardList[i]
             //use ListView.contentItem.children[index] to access items in the list
             var obj = boardList.contentItem.children[i]
             var ok = false
-            console.log("State = " + JSON.stringify(obj.checkState))
             if (obj.checkState == Qt.Checked) {
                 ok = true
             }
@@ -126,8 +119,6 @@ Item {
             trackedBoards.push(trackedBoard)
         }        
         plasmoid.configuration["tracked_boards"] = JSON.stringify(trackedBoards)
-        boardSpinLock = false
-        console.log("Updated tracked board list: " + JSON.stringify(trackedBoards))
     }
 
     function updateBoardListCallBack(err, data, xhr) {

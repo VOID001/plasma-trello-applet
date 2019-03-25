@@ -11,7 +11,7 @@
       <entry name="api_token" type="string">
           <!--default>API_TOKEN_NEEDED</default-->
       </entry>
-      <entry name="tracked_boards" type="StringList">
+      <entry name="tracked_boards" type="string">
       </entry>
   </group>
 </kcfg>

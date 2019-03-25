@@ -11,8 +11,21 @@ Component {
         id: trelloItem
         width: parent.width
         height: itemGrid.height + 10
+        Component.onCompleted: {
+            console.log("dueDate = " + model.dueDate)
+            console.log("contentHeight: " + dueDateLabelText.contentHeight)
+            if(model.dueDate == "") {
+                dueDateRow.opacity = 0
+                dueDateLabelText.text = ""
+            }
+            if(model.dueDate != "") {
+                var dateObj = new Date(model.dueDate)
+                dueDateRow.opacity = 1
+                dueDateLabelText.text = dateObj.toLocaleDateString()
+            }
+        }
         // The row layout for checkbox and main trello item
-        Row {
+        RowLayout {
             spacing: 5
             anchors.fill: parent
             CheckBox {
@@ -21,7 +34,7 @@ Component {
             // Main trello item
             GridLayout {
                 id: itemGrid
-                columns: 2
+                columns: 3
                 width: parent.width - itemCheckBox.width
                 // The upper-left corner label that displays board/list name
                 Rectangle {
@@ -36,42 +49,44 @@ Component {
                         id: boardListLabelText
                         font.bold: true
                         font.pointSize: 12
-                        text: boardName
+                        text: model.boardName
                     }
 
                 }
-                // The upper-right corner label that displays Due date if possible
-                Item {
-                    id: dueDateLabel
-                    width: dueDateRow.width
-                    height: boardListLabel.height + 10
-                    Layout.alignment: Qt.AlignRight
-                    Layout.rightMargin: 25
-                    Row {
-                        id: dueDateRow
-                        anchors.centerIn: parent
-                        spacing: 3
+                RowLayout {
+                    id: dueDateRow
+                    width: parent.width - dueDateLabelText.width - boardListLabelText.width
+                    Item {
                         Image {
-                            id: dueDateLabelIcon
                             source: "res/clock.svg"
                             smooth: true
-                            width: dueDateLabelText.height
-                            height: dueDateLabelText.height
+                            height: parent.height
+                            width: parent.height
+                            anchors.right: parent.right
                         }
-                        Text {
-                            id: dueDateLabelText
-                            text: "Due 2019/12/30"
-                            color: "green"
-                            font.bold: true
-                        }
+                        id: dueDateLabelIcon
+                        height: boardListLabelText.contentHeight + 30
+                        Layout.fillWidth: true
+                        Layout.minimumWidth: boardListLabelText.contentHeight + 30
                     }
+                }
+                Label {
+                    id: dueDateLabelText
+                    width: dueDateLabelText.contentWidth
+                    height: dueDateRow.height
+                    text: "Due 2019/12/30"
+                    horizontalAlignment: Text.AlignRight
+                    Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                    elide: Text.ElideLeft
+                    font.bold: true
+                    color: "green"
                 }
                 // The title of the card
                 Item {
                     id: cardTitleLabel
                     height: cardTitleLabelText.height * 2
                     Layout.fillWidth: true
-                    Layout.columnSpan: 2
+                    Layout.columnSpan: 3
                     Text {
                         id: cardTitleLabelText
                         width: parent.width
@@ -80,7 +95,6 @@ Component {
                         font.bold: true
                         wrapMode: Text.Wrap
                         maximumLineCount: 2
-                        // text: "This is a very very very looooooong sentence and it may exceed the width of current row"
                         text: name
                     }
                     MouseArea {

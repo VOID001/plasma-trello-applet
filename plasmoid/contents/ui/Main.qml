@@ -26,7 +26,7 @@ Item {
         ListView {
             id: itemListView
             anchors.fill: parent
-            model: DataModel{id: trelloItemListModel}
+            model: DataModel {id: trelloItemListModel}
             delegate: TrelloItem {id: trelloItemDelegate}
             // highlight: Rectangle { anchors.fill: parent; color: "lightsteelblue"; radius: 5; /* width: trelloItemDelegate.width*/ }
             focus: true
@@ -36,7 +36,8 @@ Item {
     }
 
     Timer {
-        interval: 5 * 60 * 1000
+        interval: 30 * 60 * 1000
+        repeat: true
         triggeredOnStart: true
         running: true
         onTriggered: {
@@ -48,6 +49,7 @@ Item {
         id: configTimer
         property var oldConfig;
         interval: 5000
+        repeat: true
         running: true
         onTriggered: {
             reloadCheck()
@@ -57,7 +59,6 @@ Item {
     function reloadCheck() {
         var curConfig = plasmoid.configuration;
         var entries = ["api_key", "api_token"]
-        configTimer.restart()
         // console.log("OLD: " + JSON.stringify(oldConfig))
         // console.log("NEW: " + JSON.stringify(curConfig))
         for(var i = 0; i < entries.length; i++) {
@@ -104,7 +105,8 @@ Item {
                 name: "You need to get your trello API key first, Please set them in the configuration dialog, Click here to get the key", 
                 state: "NEED_LOGIN",
                 url: "https://trello.com/app-key",
-                boardName: "Warning"
+                boardName: "Warning",
+                dueDate: ""
             }
             trelloItemListModel.append(data)
             return
@@ -123,7 +125,8 @@ Item {
             var errItem  = {
                 name: "Request to TrelloAPI failed: " + err, 
                 state: "ERROR",
-                boardName: "Error"
+                boardName: "Error",
+                dueDate: ""
             }
             console.log("ERR: On fetching board list" + err)
             trelloItemListModel.append(errItem)
@@ -140,6 +143,7 @@ Item {
                     for(var i = 0; i < data.length; i++) {
                         var strBoardName = boardIDNameMap[data[i].idBoard]
                         data[i]["boardName"] = strBoardName
+                        data[i]["dueDate"] = data[i].due != null ? data[i].due : ""
                         trelloItemListModel.append(data[i])
                     }
                     return
